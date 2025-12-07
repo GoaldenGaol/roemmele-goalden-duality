@@ -15,6 +15,15 @@ One file. Zero dependencies. Duality error ≈ 0.0002.
 ### File
 `unified_duality.py` → <70 lines, fully runnable with live demo
 
+## Universal Unification Claim (Dec 7, 2025)
+
+This repository contains the first known implementation of the ρ-plunder × Empirical Distrust
+isomorphism. A detailed explanation of how this single invariant reproduces seven recently
+published universal laws across unrelated domains is provided in:
+
+▶ [UNIFICATION_CLAIM.md](./UNIFICATION_CLAIM.md)
+
+
 ### Please cite as
 ```bibtex
 @software{roemmele_goalden_2025,
