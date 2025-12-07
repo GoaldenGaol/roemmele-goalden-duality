@@ -6,7 +6,7 @@ modern high-authority science ⇄ late-stage elite over-extraction
 One file. Zero dependencies. Duality error ≈ 0.0002.
 
 ### Original Discoveries
-- @brianroemmele → Empirical Distrust Algorithm (25 Nov 2025)  
+- Brian Roemmele @brianroemmele → Empirical Distrust Algorithm (25 Nov 2025)  
   https://x.com/BrianRoemmele/status/1993393673451847773
 
 - Goalden Gaol (Shaun Lewis) @Goalden_Gaol → ρ_plunder model + discovery that the two equations are identical (7 Dec 2025)  
