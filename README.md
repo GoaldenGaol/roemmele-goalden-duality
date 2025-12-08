@@ -28,7 +28,7 @@ One file. Zero dependencies. Duality error ≈ 0.0002.
   https://x.com/Goalden_Gaol/status/1997393355018535259
 
 ### File
-`unified_duality.py` → <70 lines, fully runnable with live demo
+`roemmele_goalden_duality_v1.py` → <70 lines, fully runnable with live demo
 
 ## Universal Unification Claim (Dec 7, 2025)
 
