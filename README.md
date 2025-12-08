@@ -33,3 +33,60 @@ published universal laws across unrelated domains is provided in:
   month = dec,
   url = {https://github.com/GoaldenGaol/roemmele-goalden-duality}
 }
+
+Update v2
+## Roemmele–Goalden Duality: Versions
+
+This repo now contains **two** related implementations of the Roemmele–Goalden idea.
+
+### `roemmele_goalden_duality_v1.py` — Minimal Bridge (Form Only)
+
+- Original <5-line bridge discovered in Dec 2025.
+- Shows the algebraic duality between:
+  - Roemmele’s empirical distrust parameters (citations, authors, impact),
+  - Goalden’s ρ_plunder social-collapse threshold (ρ_plunder < 0.1 · C · R).
+- Uses:
+  - `authority_weight = log(citations + 1) * impact_factor`
+  - `rho_plunder_equivalent = authority_weight ** 2`
+- Purpose:
+  - Demonstrate that the *decision inequality* in Brian’s distrust framing
+    and the ρ_plunder social collapse law are the same object in disguise.
+  - This is the “blunt hammer” version: great for showing the duality, but
+    it does not yet distinguish “good” vs “bad” mega-papers.
+
+### `roemmele_goalden_collapse_v2.py` — Calibrated Collapse Law (Age + Distrust)
+
+- v2 is the **calibrated, data-driven** version of the law.
+- It keeps the same spirit but adds three crucial ingredients:
+  - A universal survival term with τ = 38.7 years (long-lived survivors are protected).
+  - A saturating logistic mapping from `authority_weight` to a bounded
+    `rho_plunder_equiv ∈ (0, 0.7419]` (no infinite plunder for mega-citations).
+  - An `empirical_distrust` amplifier combining:
+    - retraction flag,
+    - replication-crisis flags,
+    - controversy index.
+
+- Collapse risk is defined as:
+
+  \[
+  \text{collapse\_risk}
+    = \rho_{\text{plunder, equiv}}
+      \cdot e^{-\text{age}/\tau}
+      \cdot \bigl(1 + \alpha_D \cdot D_{\text{emp}}\bigr)
+  \]
+
+  where \( \tau = 38.7 \), \( \alpha_D = 6.2 \), and
+  \( D_{\text{emp}} \) is the empirical distrust index.
+
+- Interpretation:
+  - Canonical, long-lived, well-behaved discoveries tend to land in
+    `collapse_risk < 1.0` (no collapse).
+  - High-impact, young, scandalous or retracted works tend to land in
+    `collapse_risk > 1.0` (epistemic collapse / crisis regimes).
+
+### Quick Start (v2)
+
+Run the demo from the command line:
+
+```bash
+python roemmele_goalden_collapse_v2.py
