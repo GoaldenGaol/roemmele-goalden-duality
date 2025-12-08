@@ -1,5 +1,20 @@
 # roemmele-goalden-duality
 
+## Claim (What This Repo Is Saying)
+
+1. There exists a compact, reusable instability scalar ρ that appears across
+   multiple domains (cosmology, social systems, scientific authority, etc.).
+2. In this repo, scientific authority stacks (citations × impact factor),
+   age, and empirical distrust (retractions / replication crises / scandals)
+   are mapped into that same ρ-framework.
+3. A single collapse threshold (ρ_eff > 1) separates:
+   - long-lived, high-authority survivors (no collapse), and
+   - young, high-authority, high-distrust episodes (epistemic collapse / crises)
+
+Code is MIT-licensed. If you think this is wrong, you are invited to fork it,
+plug in your own datasets, and publish counterexamples.
+
+
 The proven 2025 mathematical isomorphism:  
 modern high-authority science ⇄ late-stage elite over-extraction
 
