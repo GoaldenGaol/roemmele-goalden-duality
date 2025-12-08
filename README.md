@@ -38,6 +38,7 @@ published universal laws across unrelated domains is provided in:
 
 ▶ [UNIFICATION_CLAIM.md](./UNIFICATION_CLAIM.md)
 
+See also: [RHO_DYNAMICS.md](RHO_DYNAMICS.md) for the proposed evolution law for ρ.
 
 ### Please cite as
 ```bibtex
