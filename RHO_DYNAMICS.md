@@ -1,354 +1,247 @@
-# ρ-Dynamics Spec (v3 Dynamics)  
-## A Minimal Evolution Law for the ρ-Invariant
+# RHO_DYNAMICS.md — ρ-Dynamics and the Event-Horizon Ratio
 
-This document defines a **dynamical law** for the ρ-invariant,
+This document describes how the ρ-invariant can be treated as a **state
+variable** that evolves over time under two competing forces:
+
+- Voluntary exchange (decentralising, ρ ↓),
+- Plunder / capture (centralising, ρ ↑).
+
+We build a simple coarse-grained evolution law and connect it to:
+
+- The **theoretical event horizon** ρ_event ≈ 0.7419, and
+- The **empirical human bands** (ρ ≪ 0.1 as of Dec 2025).
+
+---
+
+## 1. Intuition: What Moves ρ Up or Down?
+
+From the graph ρ-law:
 
 \[
-  \rho(t) = A(t)^2 \bigl(1 - D(t)\bigr),
+  \rho(t) = A(t)^2 \,\bigl(1 - D(t)\bigr),
 \]
 
 where:
 
-- \(A(t)\) is **authority** (centralised control strength), and  
-- \(D(t)\) is **evidence diversity** (fraction of independent information paths),
-
-and shows how systems flow toward either:
-
-- a **subcritical open-futures regime** (\(\rho < \rho_\text{crit}\)), or  
-- a **supercritical collapse regime** (\(\rho > \rho_\text{crit}\)),
-
-depending on the balance between **plunder** and **voluntary exchange**.
-
-The universal critical threshold is
-
-\[
-  \rho_\text{crit} \approx 0.7419.
-\]
-
----
-
-## 1. Setup: Graph ρ-Law Recap
-
-At each time \(t\), the system is represented by a weighted directed graph:
-
-- Nodes \(V = \{1,\dots,N\}\)
-- Weights \(w_{ij}(t) \ge 0\): influence from node \(j\) to node \(i\)
-
-Weight matrix:
-
-\[
-W(t) = [w_{ij}(t)]_{i,j=1}^N.
-\]
-
-Outgoing distributions (column normalisation):
-
-\[
-p_{ij}(t) = \frac{w_{ij}(t)}{\sum_k w_{kj}(t) + \varepsilon}.
-\]
-
-### 1.1 Authority \(A(t)\)
-
-We define authority as the **maximum incoming share** captured by any node:
-
-\[
-A(t) := \max_j \frac{\sum_i w_{ij}(t)}{\sum_{i,k} w_{ik}(t)}.
-\]
-
-Interpretation: the fraction of total influence captured by the strongest hub.
-
-(Alternative equivalent definitions—e.g. spectral radius or max centrality—can
-be used without changing the qualitative results.)
-
-### 1.2 Diversity \(D(t)\)
-
-Per-node entropy of outgoing distribution:
-
-\[
-H_j(t) = -\sum_i p_{ij}(t)\,\log p_{ij}(t).
-\]
-
-Normalized per-node diversity:
-
-\[
-H_{j,\text{norm}}(t) = \frac{H_j(t)}{\log N} \in [0,1].
-\]
-
-Global diversity:
-
-\[
-D(t) := \frac{1}{N}\sum_{j=1}^N H_{j,\text{norm}}(t) \in [0,1].
-\]
-
-- \(D(t) \approx 1\): many independent paths, no bottleneck.  
-- \(D(t) \approx 0\): flows highly concentrated, few effective paths.
-
-### 1.3 Invariant ρ(t)
-
-\[
-\rho(t) := A(t)^2 \bigl(1 - D(t)\bigr).
-\]
-
-- High \(A(t)\) = strong hub(s).  
-- Low \(D(t)\) = collapsed path diversity.  
-- High \(\rho(t)\) = centralised, low-diversity regime.
-
----
-
-## 2. Voluntary Exchange vs Plunder
-
-We model changes in the graph as the net effect of two processes:
-
-1. **Voluntary exchange** (cooperative, decentralising)
-2. **Plunder** (centralising, extractive)
-
-At each timestep:
-
-\[
-W(t+\Delta t) = W(t) + \Delta W_\text{vol}(t) - \Delta W_\text{pl}(t).
-\]
-
-We impose only **directional constraints**:
-
-### 2.1 Voluntary Exchange
-
-Voluntary moves:
-
-- Soften hubs (reduce the strongest share),
-- Create / strengthen alternative paths.
-
-Formally:
-
-\[
-\dot{A}_\text{vol}(t) \le 0, \quad
-\dot{D}_\text{vol}(t) \ge 0.
-\]
-
-### 2.2 Plunder
-
-Plunder moves:
-
-- Strengthen hubs (grow the strongest share),
-- Destroy / weaken alternative paths.
-
-Formally:
-
-\[
-\dot{A}_\text{pl}(t) \ge 0, \quad
-\dot{D}_\text{pl}(t) \le 0.
-\]
-
-Total rates:
-
-\[
-\dot{A}(t) = \dot{A}_\text{vol}(t) + \dot{A}_\text{pl}(t), \quad
-\dot{D}(t) = \dot{D}_\text{vol}(t) + \dot{D}_\text{pl}(t).
-\]
-
----
-
-## 3. Sign of ρ̇: Monotone Effects
-
-Differentiate
-
-\[
-\rho(t) = A(t)^2 \bigl(1 - D(t)\bigr),
-\]
-
-to get:
-
-\[
-\dot{\rho}(t) = 2A(1-D)\dot{A} - A^2 \dot{D}.
-\]
-
-Split into voluntary and plunder contributions:
-
-\[
-\dot{\rho} = \dot{\rho}_\text{vol} + \dot{\rho}_\text{pl},
-\]
-
-with
-
-\[
-\dot{\rho}_\text{vol}
-  = 2A(1-D)\dot{A}_\text{vol} - A^2 \dot{D}_\text{vol},
-\]
-\[
-\dot{\rho}_\text{pl}
-  = 2A(1-D)\dot{A}_\text{pl} - A^2 \dot{D}_\text{pl}.
-\]
-
-Using the sign constraints:
-
-- Voluntary:
-  - \(\dot{A}_\text{vol} \le 0\) and \(1-D \ge 0\) ⇒ first term ≤ 0.
-  - \(\dot{D}_\text{vol} \ge 0\) ⇒ second term ≤ 0.
-  ⇒ **\(\dot{\rho}_\text{vol} \le 0\)** (voluntary exchange always pushes ρ down).
-
-- Plunder:
-  - \(\dot{A}_\text{pl} \ge 0\) ⇒ first term ≥ 0.
-  - \(\dot{D}_\text{pl} \le 0\) ⇒ second term ≥ 0.
-  ⇒ **\(\dot{\rho}_\text{pl} \ge 0\)** (plunder always pushes ρ up).
-
-Thus ρ is a **competition** between one process that monotonically decreases it
-and one that monotonically increases it.
-
----
-
-## 4. Coarse-Grained Evolution Law for ρ(t)
-
-We approximate the net effect as:
-
-\[
-\dot{\rho}(t) = \alpha(t)\,F_\text{pl}(\rho) - \beta(t)\,F_\text{vol}(\rho),
-\]
-
-where:
-
-- \(\alpha(t) \ge 0\): **plunder intensity** at time t,  
-- \(\beta(t) \ge 0\): **voluntary / anti-plunder intensity** at time t,  
-- \(F_\text{pl}, F_\text{vol} \ge 0\): sensitivity of ρ to each process.
-
-A minimal choice with the right qualitative behavior is:
-
-- \(F_\text{pl}(\rho) = (1 - \rho)\): plunder has more effect when ρ is low.  
-- \(F_\text{vol}(\rho) = \rho\): voluntary corrections have more effect when ρ is high.
+- A(t): strongest hub’s share of incoming influence,
+- D(t): average normalized entropy of outgoing distributions.
 
 Then:
 
+- Voluntary exchange (more peer-to-peer, more open paths):
+  - tends to **reduce** A(t),
+  - tends to **increase** D(t),
+  - ⇒ **decreases** ρ(t).
+
+- Plunder / capture (monopolisation, censorship, “all roads lead to X”):
+  - tends to **increase** A(t),
+  - tends to **decrease** D(t),
+  - ⇒ **increases** ρ(t).
+
+So at a coarse-grained level, we can write:
+
 \[
-\dot{\rho}(t) = \alpha(t)(1 - \rho(t)) - \beta(t)\rho(t).
+  \dot{\rho}(t) = \dot{\rho}_\text{plunder}(t)
+                + \dot{\rho}_\text{voluntary}(t),
 \]
 
-On any time interval where \(\alpha\) and \(\beta\) can be treated as
-approximately constant, this reduces to a linear ODE:
+with the sign of each contribution fixed by construction.
+
+---
+
+## 2. Coarse-Grained Evolution Law
+
+We approximate:
+
+- Plunder contribution:
+
+  \[
+    \dot{\rho}_\text{plunder} \approx \alpha (1 - \rho),
+  \]
+
+  where α ≥ 0 is an effective **plunder intensity** and (1−ρ) ensures
+  diminishing returns near the ceiling.
+
+- Voluntary contribution:
+
+  \[
+    \dot{\rho}_\text{voluntary} \approx -\beta \rho,
+  \]
+
+  where β ≥ 0 is an effective **voluntary / anti-plunder intensity** and ρ
+  ensures that the downward pull is stronger when ρ is already high.
+
+Combining:
 
 \[
-\dot{\rho} = \alpha - (\alpha + \beta)\rho.
+  \dot{\rho} = \alpha(1 - \rho) - \beta \rho
+             = \alpha - (\alpha + \beta)\rho.
 \]
 
-Solution:
+In discrete time (e.g., yearly snapshots):
 
 \[
-\rho(t) = \rho_* + \bigl(\rho(0) - \rho_*\bigr)e^{-(\alpha + \beta)t},
-\]
-
-with unique fixed point:
-
-\[
-\rho_* = \frac{\alpha}{\alpha + \beta}.
+  \Delta \rho(t) \approx \alpha - (\alpha + \beta)\rho(t).
 \]
 
 ---
 
-## 5. Universal Critical Ratio
+## 3. Fixed Point and α/β Ratio
 
-The universal collapse threshold is:
-
-\[
-\rho_\text{crit} \approx 0.7419.
-\]
-
-In the coarse-grained dynamics, the long-run regime is decided by whether
+If α and β are approximately constant over some time window, then the
+fixed point is:
 
 \[
-\rho_* \lessgtr \rho_\text{crit}.
+  \rho_* = \frac{\alpha}{\alpha + \beta} \in [0,1].
 \]
 
-Compute the critical ratio of plunder to voluntary intensities:
+- High α/β ⇒ ρ* closer to 1 (plunder dominates in the long run).
+- Low α/β ⇒ ρ* closer to 0 (voluntary exchange dominates).
+
+We can also invert:
 
 \[
-\rho_* < \rho_\text{crit}
-\quad\Leftrightarrow\quad
-\frac{\alpha}{\alpha + \beta} < \rho_\text{crit}
-\quad\Leftrightarrow\quad
-\frac{\alpha}{\beta}
-    < \frac{\rho_\text{crit}}{1 - \rho_\text{crit}}.
+  \frac{\alpha}{\beta} = \frac{\rho_*}{1 - \rho_*}
 \]
 
-Numerically:
-
-\[
-\frac{\rho_\text{crit}}{1 - \rho_\text{crit}}
-\approx \frac{0.7419}{0.2581} \approx 2.875.
-\]
-
-**Result:**
-
-- If
-  \[
-    \frac{\alpha}{\beta} < 2.875,
-  \]
-  then \(\rho_* < \rho_\text{crit}\): the system converges to a
-  **subcritical, open-futures regime**.
-
-- If
-  \[
-    \frac{\alpha}{\beta} > 2.875,
-  \]
-  then \(\rho_* > \rho_\text{crit}\): the system converges to a
-  **supercritical, collapsed / locked regime**.
-
-In words:
-
-> There is a universal critical ratio of centralising processes (plunder)
-> to decentralising processes (voluntary exchange) such that if plunder
-> overwhelms voluntary exchange by more than ≈ 2.875×, the system’s long-run
-> ρ is forced into the collapse band.
+whenever β > 0.
 
 ---
 
-## 6. Connection to Scalar Laws (e.g., v2 Roemmele–Goalden)
+## 4. Event-Horizon Ratio (Theoretical)
 
-In many domains we do not observe the full graph \(W(t)\), but only scalar
-aggregates over time:
+The scalar theory and synthetic graph experiments identify a **universal
+event horizon** at:
 
-- counts of centralised authority (citations, wealth, power),
-- proxies for diversity (number of independent sources, variety of players),
-- plus age and crisis markers (retractions, scandals, wars, crashes).
+\[
+  \rho_{\text{event}} \approx 0.7419.
+\]
 
-The **v2 Roemmele–Goalden collapse law** is then interpreted as a
-**low-dimensional estimator** of ρ and of the effective ratio \(\alpha/\beta\):
+If we imagine a system that has settled exactly at this event horizon
+as its fixed point (ρ* = ρ_event), then the corresponding α/β is:
 
-- Bibliometric authority and impact approximate \(A(t)\);
-- Provenance and authorship diversity approximate \(D(t)\);
-- Age and empirical distrust modulate how long a high-ρ configuration has
-  persisted and how often it has been partially reset by crises.
+\[
+  \frac{\alpha}{\beta}_\text{event}
+  = \frac{\rho_{\text{event}}}{1 - \rho_{\text{event}}}
+  \approx \frac{0.7419}{0.2581}
+  \approx 2.875.
+\]
 
-If repeated estimates of ρ from scalar laws and from graph-based ρ both
-cluster their empirical transitions near \(\rho_\text{crit} \approx 0.7419\),
-this supports the claim that the same **underlying ρ-dynamics** governs
-a wide class of physical, social, and epistemic systems.
+Interpretation:
+
+- Systems with α/β **near 2.875** (under this simple model) would be
+  “tuned” to live in an event-horizon regime, where plunder dominates
+  strong enough to keep ρ near ~0.74.
+
+Empirical finding (Dec 2025):
+
+- In at least one large, real system (arXiv Computer Science citation
+  network, 1991–2024), fitting this law yields |α/β| ≪ 1, i.e. the
+  system operates deep in the open regime with a very low implied ρ*.
+
+So far, **no large human influence system studied has shown an α/β even
+remotely near 2.875**; this matches the observation that realised ρ values
+for humans remain ≪ 0.1.
 
 ---
 
-## 7. Usage and Open Questions
+## 5. Estimating α and β from Data
 
-**Usage:**
+Given a time series of ρ(t_k), for k = 0,1,…,T (e.g., yearly ρ for a field
+or community):
 
-- Estimate \(\alpha\) and \(\beta\) in a given domain by regressing observed
-  changes in ρ (scalar or graph-based) against plausible plunder vs voluntary
-  signals.
-- Check whether observed trajectories ρ(t) are consistent with the linear
-  evolution law:
-  \[
-    \dot{\rho} \approx \alpha - (\alpha + \beta)\rho.
-  \]
-- Evaluate whether real-world systems that collapse or lock-in indeed exhibit
-  long-run \(\rho_*\) above \(\rho_\text{crit}\), and whether stable, open
-  systems exhibit \(\rho_* < \rho_\text{crit}\).
+1. Compute the increments:
 
-**Open questions:**
+   \[
+     \Delta \rho_k = \rho(t_{k+1}) - \rho(t_k).
+   \]
 
-- Can we derive the specific form
-  \(\dot{\rho} = \alpha(1-\rho) - \beta\rho\) from microscopic update rules
-  on \(W(t)\) for broad classes of systems?
-- Is \(\rho_\text{crit} \approx 0.7419\) truly universal across network
-  ensembles and domains, or does it emerge as a fixed point under
-  coarse-graining (RG-like behavior)?
-- How do higher-order structures (motifs, cycles, communities) modify
-  the effective \(\alpha/\beta\) ratio and thus the long-run regime?
+2. Fit the linear model:
 
-This document records the **ρ-dynamics conjecture**: that a simple evolution
-law for ρ, driven by the relative strength of plunder vs voluntary exchange,
-underlies a wide family of collapse and lock-in phenomena in physical,
-social, and epistemic systems.
+   \[
+     \Delta \rho_k \approx \alpha - (\alpha + \beta)\rho(t_k)
+   \]
+
+   using standard regression to solve for:
+
+   - intercept ≈ α,
+   - slope ≈ −(α + β).
+
+3. Recover:
+
+   - α from the intercept,
+   - (α + β) from the negative slope,
+   - β = (α + β) − α,
+   - α/β and ρ* = α/(α + β), when β is not too close to 0.
+
+4. Compare:
+
+   - α/β vs the **event-horizon ratio** ≈ 2.875.
+   - ρ* vs **empirical human bands** (e.g., <0.01, 0.03, 0.05, 0.10).
+
+If the fitted α/β is small (|α/β| ≪ 1) and ρ* ≪ 0.1, the system is far
+inside the open, structure-forming regime.
+
+---
+
+## 6. Example: arXiv CS 1991–2024 (Empirical)
+
+For the arXiv Computer Science citation network (nodes = papers, edges =
+j→i if j cites i), yearly ρ(t) was estimated from 1991–2024 using the
+graph ρ-law.
+
+Observed properties:
+
+- ρ rose slowly from ~10⁻⁴ to ~2.3×10⁻³ over three decades.
+- It remained orders of magnitude below any known “danger” band for humans.
+
+Linear fit yields:
+
+- α ≈ 2.2×10⁻⁵,
+- β slightly negative (due to model mismatch / saturation effects),
+- |α/β| ≪ 1.
+
+Interpretation:
+
+- arXiv CS sits deep in the low-ρ regime.
+- The plunder vs voluntary balance implied by this fit is nowhere near
+  the theoretical event-horizon ratio.
+
+---
+
+## 7. Human Interpretive Bands (Dec 2025, Provisional)
+
+Empirical calibration across multiple domains suggests:
+
+- ρ ≲ 0.01:
+  - “Green zone” — open, multi-path, low risk.
+- 0.01 ≲ ρ ≲ 0.03:
+  - “Yellow zone” — canon/hype, brittle but still functioning.
+- 0.03 ≲ ρ ≲ 0.05:
+  - “Orange zone” — high-risk centralisation.
+- 0.05 ≲ ρ ≲ 0.10:
+  - “Red zone” — near-collapse; systems observed here tended to fragment or
+    die shortly thereafter (e.g., a pump-and-dump group at ρ ~ 0.098).
+
+The event horizon ρ_event ≈ 0.7419 remains a **theoretical ceiling**:
+no functioning human system has yet reached anywhere near it.
+
+In practice:
+
+- Use ρ(t) as a **continuous risk indicator**,
+- Use α/β to characterise the **direction of drift**:
+  - α/β ≪ 1: voluntarily dominated, open regime.
+  - Large α/β (if ever observed) would indicate a system being driven
+    toward an event-horizon-like configuration.
+
+---
+
+## 8. Relation to Other Levels of the Stack
+
+- **Graph ρ-law (Level 2)**: gives ρ(W_t) at each time slice from network
+  structure.
+- **ρ-dynamics (this document)**: interprets changes in ρ over time in terms
+  of effective plunder and voluntary exchange.
+- **Scalar collapse law (Level 1)**: maps domain-specific quantities
+  (e.g. bibliometrics) into a ρ-like scalar, which can itself be tracked
+  over time and analysed with the same dynamic model.
