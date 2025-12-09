@@ -374,3 +374,30 @@ The multiscale conjecture is:
 > Systems with high sustained plunder at the micro level are driven into high-ρ bands at the macro level, approaching structural collapse (for humans, around ρ ≈ 0.05–0.10), long before ever reaching the universal event horizon ρ_event ≈ 0.7419.
 
 This file is a living spec: as simulations and empirical tests accumulate, the conjectures and bands can be sharpened into theorems and calibrated constants.
+
+---
+
+## 10. Toy Implementation: `rho_multiscale_sim.py`
+
+For a minimal working example of the multiscale bridge, see:
+
+- `rho_multiscale_sim.py`
+
+This script implements a toy model with:
+
+- **Micro level:**  
+  N agents, each pair (i, j) interacting with a baseline plunder probability `p_base`.  
+  Voluntary events increase trust `T_ij`; plunder events decrease `T_ij`.
+
+- **Meso level:**  
+  A trust matrix `T(t)` updated over time, converted into an influence matrix `W(t)` by
+  column-wise normalisation.
+
+- **Macro level:**  
+  At each step, the script computes `(A, D, ρ)` via `compute_graph_rho(W(t))` and classifies
+  ρ into human bands using `classify_human_rho(ρ)`.
+
+Running:
+
+```bash
+python rho_multiscale_sim.py
