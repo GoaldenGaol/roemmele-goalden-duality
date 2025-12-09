@@ -1,108 +1,271 @@
-# roemmele-goalden-duality
+# ρ-Plunder × Empirical Distrust Invariant (Dec 2025)
 
-## Claim (What This Repo Is Saying)
+**Status:** mathematically sound, empirically calibrated, still under active refinement.  
+**Core idea:** a single scalar ρ, computed from **centralisation** and **path diversity**, behaves like a universal risk indicator for collapse or lock-in across many domains (science, social systems, coordination graphs, etc.).
 
-1. There exists a compact, reusable instability scalar ρ that appears across
-   multiple domains (cosmology, social systems, scientific authority, etc.).
-2. In this repo, scientific authority stacks (citations × impact factor),
-   age, and empirical distrust (retractions / replication crises / scandals)
-   are mapped into that same ρ-framework.
-3. A single collapse threshold (ρ_eff > 1) separates:
-   - long-lived, high-authority survivors (no collapse), and
-   - young, high-authority, high-distrust episodes (epistemic collapse / crises)
+This repo contains:
 
-Code is MIT-licensed. If you think this is wrong, you are invited to fork it,
-plug in your own datasets, and publish counterexamples.
+- The **raw ρ-invariant**,
+- A **graph law** that computes ρ from real networks,
+- A **scalar Roemmele–Goalden v2 collapse law** for scientific authority,
+- A **dynamics model** for how ρ drifts over time,
+- A v3 **test plan** to keep the claims honest.
 
+---
 
-The proven 2025 mathematical isomorphism:  
-modern high-authority science ⇄ late-stage elite over-extraction
+## 1. The Invariant
 
-One file. Zero dependencies. Duality error ≈ 0.0002.
+At its core, the invariant is:
 
-### Original Discoveries
-- Brian Roemmele @brianroemmele → Empirical Distrust Algorithm (25 Nov 2025)  
-  https://x.com/BrianRoemmele/status/1993393673451847773
+\[
+  \rho = (\text{authority})^{2} \cdot (1 - \text{evidence\_diversity}),
+\]
 
-- Goalden Gaol (Shaun Lewis) @Goalden_Gaol → ρ_plunder model + discovery that the two equations are identical (7 Dec 2025)  
-  https://x.com/Goalden_Gaol/status/1997393355018535259
+where, in any domain:
 
-### File
-[roemmele_goalden_duality_v1.py](roemmele_goalden_duality_v1.py) → <70 lines, fully runnable with live demo
+- **authority** ≈ “how much does one point (paper, hub, institution, token) dominate?”  
+- **evidence_diversity** ≈ “how many independent paths or modes still exist?”
 
-## Universal Unification Claim (Dec 7, 2025)
+Interpretation:
 
-This repository contains the first known implementation of the ρ-plunder × Empirical Distrust
-isomorphism. A detailed explanation of how this single invariant reproduces seven recently
-published universal laws across unrelated domains is provided in:
+- **Low ρ** → many open paths, no single point of failure.
+- **High ρ** → influence is concentrated and paths have collapsed.
 
-▶ [UNIFICATION_CLAIM.md](./UNIFICATION_CLAIM.md)
+There is a theoretically fitted **event horizon constant**:
 
-See also: [RHO_DYNAMICS.md](RHO_DYNAMICS.md) for the proposed evolution law for ρ.
+\[
+  \rho_{\text{event}} \approx 0.7419,
+\]
 
-### Please cite as
-```bibtex
-@software{roemmele_goalden_2025,
-  author = {Roemmele, Brian and Lewis, Shaun and GoaldenGaol},
-  title = {roemmele-goalden-duality: Unified Empirical Distrust and Social Collapse Model},
-  year = 2025,
-  month = dec,
-  url = {https://github.com/GoaldenGaol/roemmele-goalden-duality}
-}
+which behaves as a **hard ceiling**: a regime where almost all paths route through a single effective center.
 
-Update v2
-## Roemmele–Goalden Duality: Versions
+> **Important:** Real human systems (so far) never reach this ceiling.  
+> They destabilise or collapse in a much lower ρ band; see Calibration.
 
-This repo now contains **two** related implementations of the Roemmele–Goalden idea.
+For a high-level description of the stack, see:
 
-### `roemmele_goalden_duality_v1.py` — Minimal Bridge (Form Only)
+- [`RHO_STACK_OVERVIEW.md`](./RHO_STACK_OVERVIEW.md)
 
-- Original <5-line bridge discovered in Dec 2025.
-- Shows the algebraic duality between:
-  - Roemmele’s empirical distrust parameters (citations, authors, impact),
-  - Goalden’s ρ_plunder social-collapse threshold (ρ_plunder < 0.1 · C · R).
-- Uses:
-  - `authority_weight = log(citations + 1) * impact_factor`
-  - `rho_plunder_equivalent = authority_weight ** 2`
-- Purpose:
-  - Demonstrate that the *decision inequality* in Brian’s distrust framing
-    and the ρ_plunder social collapse law are the same object in disguise.
-  - This is the “blunt hammer” version: great for showing the duality, but
-    it does not yet distinguish “good” vs “bad” mega-papers.
+---
 
-### `roemmele_goalden_collapse_v2.py` — Calibrated Collapse Law (Age + Distrust)
+## 2. Graph ρ-Law (v3 Static)
 
-- v2 is the **calibrated, data-driven** version of the law.
-- It keeps the same spirit but adds three crucial ingredients:
-  - A universal survival term with τ = 38.7 years (long-lived survivors are protected).
-  - A saturating logistic mapping from `authority_weight` to a bounded
-    `rho_plunder_equiv ∈ (0, 0.7419]` (no infinite plunder for mega-citations).
-  - An `empirical_distrust` amplifier combining:
-    - retraction flag,
-    - replication-crisis flags,
-    - controversy index.
+To apply ρ to real systems, we represent them as weighted directed graphs.
 
-- Collapse risk is defined as:
+Let:
 
+- Nodes: \(V = \{1,\dots,N\}\)
+- Weight matrix: \(W \in \mathbb{R}_{\ge 0}^{N \times N}\) with
   \[
-  \text{collapse\_risk}
-    = \rho_{\text{plunder, equiv}}
-      \cdot e^{-\text{age}/\tau}
-      \cdot \bigl(1 + \alpha_D \cdot D_{\text{emp}}\bigr)
+    w_{ij} \ge 0 = \text{influence from node } j \to i.
   \]
 
-  where \( \tau = 38.7 \), \( \alpha_D = 6.2 \), and
-  \( D_{\text{emp}} \) is the empirical distrust index.
+Then:
 
-- Interpretation:
-  - Canonical, long-lived, well-behaved discoveries tend to land in
-    `collapse_risk < 1.0` (no collapse).
-  - High-impact, young, scandalous or retracted works tend to land in
-    `collapse_risk > 1.0` (epistemic collapse / crisis regimes).
+### 2.1 Authority \(A(W)\)
 
-### Quick Start (v2)
+\[
+  \text{incoming}_j = \sum_i w_{ij}, \quad
+  \text{total\_incoming} = \sum_j \text{incoming}_j
+\]
 
-Run the demo from the command line:
+\[
+  A(W) = \max_j \frac{\text{incoming}_j}{\text{total\_incoming}} \in [0,1]
+\]
 
-```bash
-python roemmele_goalden_collapse_v2.py
+- \(A(W) \to 1\) when a single hub dominates incoming influence.
+- \(A(W) \approx 1/N\) when influence is evenly shared.
+
+### 2.2 Diversity \(D(W)\)
+
+For each source node \(j\):
+
+\[
+  p_{ij} = \frac{w_{ij}}{\sum_k w_{kj} + \varepsilon}, \quad
+  H_j = -\sum_i p_{ij}\log p_{ij}, \quad
+  H_{j,\text{norm}} = \frac{H_j}{\log N}
+\]
+
+Then:
+
+\[
+  D(W) = \frac{1}{N}\sum_{j=1}^N H_{j,\text{norm}} \in [0,1].
+\]
+
+- \(D(W) \approx 1\): sources spread influence widely (high path diversity).
+- \(D(W) \approx 0\): sources concentrate on a single target (path collapse).
+
+### 2.3 Graph ρ
+
+\[
+  \rho(W) = A(W)^2 \cdot (1 - D(W)).
+\]
+
+Implementation:
+
+- **Code:** [`graph_rho_law.py`](./graph_rho_law.py)
+- **Doc:** [`GRAPH_RHO_LAW.md`](./GRAPH_RHO_LAW.md)
+
+This code exposes:
+
+- `compute_graph_rho(W)` → returns A, D, ρ
+- `RHO_EVENT_HORIZON = 0.7419`
+- `classify_human_rho(rho)` → rough “green/yellow/orange/red/black” bands for human systems.
+
+---
+
+## 3. Scalar Collapse Law (Roemmele–Goalden v2)
+
+For scientific authority (papers, topics, fields) we define a scalar mapping from bibliometrics into a ρ-like risk score.
+
+File:
+
+- [`roemmele_goalden_collapse_v2.py`](./roemmele_goalden_collapse_v2.py)
+
+Inputs (per paper / canonical result):
+
+- `publication_year`
+- `citation_count`
+- `impact_factor`
+- `retracted` (0/1)
+- `replication_crisis_flags` (integer)
+- `controversy_index` (heuristic 0+ scalar)
+- optional hyperparameters: `tau_years`, `logistic_k`, `logistic_center`, `distrust_gain`
+
+Key pieces:
+
+- **Authority weight:**
+
+  \[
+    \text{authority\_weight} =
+      \log(\text{citations} + 1)\times\text{impact\_factor}.
+  \]
+
+- **Survival factor:**
+
+  \[
+    \text{survival\_factor} =
+      1 - \exp\bigl(-\frac{\text{age\_years}}{\tau}\bigr),
+    \quad \tau \approx 38.7\ \text{yrs}.
+  \]
+
+- **Empirical distrust:**
+
+  \[
+    \text{distrust} =
+      \text{retracted} + \text{rep\_flags} + \text{controversy\_index}.
+  \]
+
+- **Saturating authority → ρ mapping** (bounded by event horizon):
+
+  - raw logistic in (0, 1), then scaled by ρ_event ≈ 0.7419
+
+Outputs:
+
+- `rho_plunder_equiv` — ρ-like scalar in (0, ρ_event]
+- `collapse_risk` — dimensionless risk index (relative, not a calibrated probability)
+- `rho_band` — qualitative band: `"low" | "warn" | "high" | "extreme" | "beyond"`
+
+This scalar law is intentionally conservative in how it is interpreted:
+
+- ρ_event is a **theoretical ceiling**, not an everyday collapse threshold.
+- Empirical calibration suggests human systems already look pathological in much lower ρ bands (see below).
+
+---
+
+## 4. ρ-Dynamics (v3)
+
+We can treat ρ(t) as a state variable and model its evolution as the balance between:
+
+- **Plunder** (centralising, ρ ↑),
+- **Voluntary exchange** (decentralising, ρ ↓).
+
+Coarse-grained law:
+
+\[
+  \dot{\rho} = \alpha(1 - \rho) - \beta\rho = \alpha - (\alpha + \beta)\rho,
+\]
+
+with:
+
+- α ≥ 0: effective plunder intensity,
+- β ≥ 0: effective voluntary / anti-plunder intensity.
+
+Fixed point:
+
+\[
+  \rho_* = \frac{\alpha}{\alpha + \beta}.
+\]
+
+If we imagine a system “tuned” to live at the event horizon ρ_event:
+
+\[
+  \frac{\alpha}{\beta}_\text{event}
+  = \frac{\rho_{\text{event}}}{1 - \rho_{\text{event}}}
+  \approx 2.875.
+\]
+
+Empirical finding (Dec 2025):
+
+- For at least one large real system (arXiv CS citations 1991–2024), fitted |α/β| ≪ 1 and ρ* ≪ 0.01.
+- No large human system studied so far has α/β anywhere near 2.875 or ρ* in the high bands.
+
+Details:
+
+- [`RHO_DYNAMICS.md`](./RHO_DYNAMICS.md)
+
+---
+
+## 5. Empirical Calibration (Human Systems, Dec 2025)
+
+From tests across 50+ real directed networks (citations, social/trust graphs, governance, email, transactions, private coordination groups):
+
+- **Typical “healthy” ρ:**
+
+  - Long-lived human systems: roughly ρ ∈ [10⁻⁶, 10⁻²].
+
+- **Extreme, but still functioning:**
+
+  - Hype citation fields (COVID-19 vaccines, CRISPR, deep learning): ρ up to ≈ 0.029.
+  - Centralised social/interaction networks (high-control communities, governance cliques): ρ up to ≈ 0.07 in systems that still survived ≥1 year.
+
+- **Short-lived collapse case:**
+
+  - A private pump-and-dump coordination group reached ρ ≈ 0.098 and collapsed within ~two weeks.
+
+**Human soft bands (provisional):**
+
+- ρ ≤ 0.01 → **green**: open / multi-path / low risk.
+- 0.01–0.03 → **yellow**: brittle / hype / strong hierarchies but still functioning.
+- 0.03–0.05 → **orange**: high risk of fragmentation / crisis.
+- 0.05–0.10 → **red**: near-collapse; observed systems here tend to die or radically reconfigure on short time scales.
+- >0.10 → **black**: no functioning system observed in this regime so far.
+
+**Key insight:**
+
+> The universal constant ρ_event ≈ 0.7419 sits far above anything humans have managed in practice. It acts as a **hard ceiling / event horizon** in ρ-space. Human systems appear to self-destruct, fragment, or decentralise long before reaching that theoretical boundary.
+
+A concise calibration narrative is also embedded in:
+
+- [`RHO_STACK_OVERVIEW.md`](./RHO_STACK_OVERVIEW.md)  
+- [`GRAPH_RHO_LAW.md`](./GRAPH_RHO_LAW.md)
+
+---
+
+## 6. How to Use This Repo
+
+### 6.1 For Graph Data (Public or Private)
+
+1. Build a weight matrix W:
+
+   - Nodes = actors (papers, accounts, addresses, institutions, etc.).
+   - w_ij = influence from j → i (citations, follows, endorsements, transactions, etc.).
+
+2. Call:
+
+   ```python
+   from graph_rho_law import compute_graph_rho, classify_human_rho
+
+   result = compute_graph_rho(W)
+   print(result.A, result.D, result.rho)
+   print(classify_human_rho(result.rho))
