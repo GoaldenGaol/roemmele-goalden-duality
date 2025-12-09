@@ -283,6 +283,12 @@ Second-wave tests (see `RHO_CALIBRATION_WAVE2.md`) added:
 - ρ > 0.10 → “extreme centralisation / unexplored”:
   - no clearly stable human systems above ~0.12 so far.
 
+- **Wave 3 (Dec 2025):**  
+  Applied ρ(t) to real collapse case studies (Enron email, The DAO, Reddit r/The_Donald).  
+  In all three, ρ entered orange/red bands 1–6 months before failure.  
+  Introduced an optional N-scaled view ρ_eff = ρ / ln(N/100) for cross-scale comparisons.
+  See `RHO_CALIBRATION_WAVE3.md` for details.
+
 For details and dataset lists, see `RHO_CALIBRATION_WAVE2.md`.
 ---
 
