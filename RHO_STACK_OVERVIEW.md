@@ -262,4 +262,19 @@ Future calibration waves (wave 3 and beyond) should:
 - Explore N-scaling (e.g., ρ_eff = ρ / log(N/100)) to separate web-scale red from meso-scale red.
 - Continue searching for stable systems clearly > 0.12, or short-lived systems with very high ρ, to refine the meaning of the black band.
 
+### Optional Cross-Scale View: ρ_eff (v4 Preview)
+
+Wave 3 experiments introduced an N-aware diagnostic:
+
+- ρ_eff = ρ / ln(N / 100), for N > 100.
+
+This does **not** change the core invariant ρ. Instead, it offers a way to compare small and web-scale systems on a more equal footing:
+
+- Web-scale stable systems (e.g., Web-Google) move from raw red/black into ρ_eff green.
+- Small, flash-collapsing systems (Telegram pump, Enron, The DAO, r/The_Donald) remain clearly elevated.
+
+ρ_eff is recommended as an optional diagnostic in v4 for cross-scale comparisons. The core law and bands are always defined in terms of raw ρ.
+
 This overview is meant as the top-level index: Level 0–3 define the math and dynamics; the Empirical Calibration & Human Bands section pins those abstractions to real-world behavior as of Dec 2025.
+
+
