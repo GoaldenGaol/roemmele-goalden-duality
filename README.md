@@ -250,6 +250,40 @@ A concise calibration narrative is also embedded in:
 - [`RHO_STACK_OVERVIEW.md`](./RHO_STACK_OVERVIEW.md)  
 - [`GRAPH_RHO_LAW.md`](./GRAPH_RHO_LAW.md)
 
+
+## Calibration Status (Dec 2025 – Wave 2)
+
+The core invariant and event horizon are unchanged:
+
+- ρ(W) = A(W)^2 · (1 − D(W))
+- ρ_event ≈ 0.7419 is an **event horizon / ceiling**, not a typical human threshold.
+
+First-wave tests showed:
+
+- Citation networks: ρ ≈ 10⁻⁶–10⁻²
+- Social / interaction networks: up to ~0.07
+- A pump-and-dump Telegram group: ρ ≈ 0.098 and collapsed within ~2 weeks
+- No real system near ρ_event.
+
+Second-wave tests (see `RHO_CALIBRATION_WAVE2.md`) added:
+
+- A major web graph (Web-Google) with ρ ≈ 0.089 (unweighted) and ≈ 0.112 (with PageRank-style weighting) that is **highly functional and stable** over decades.
+- No new functioning systems clearly above ~0.12.
+- Confirmation that:
+  - low ρ (≤ 0.01) systems are consistently stable,
+  - ρ in the 0.05–0.10 range indicates strong centralisation but is **not a universal “near-collapse” zone**—domain and scale matter.
+
+**Practical rule of thumb (v3.1):**
+
+- ρ ≲ 0.005–0.01 → “very safe” (no observed collapses here so far).
+- ρ ≈ 0.01–0.05 → “normal → brittle” depending on domain (citations vs social).
+- ρ ≈ 0.05–0.10 → “strong centralisation”:
+  - high-risk for small/medium social/financial systems,
+  - requires extra context for web-scale infrastructures.
+- ρ > 0.10 → “extreme centralisation / unexplored”:
+  - no clearly stable human systems above ~0.12 so far.
+
+For details and dataset lists, see `RHO_CALIBRATION_WAVE2.md`.
 ---
 
 ## 6. How to Use This Repo
