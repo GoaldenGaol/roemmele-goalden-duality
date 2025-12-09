@@ -1,164 +1,297 @@
-# RHO v3 Test Plan — Graph ρ-Law & ρ-Dynamics
+# RHO_V3_TEST_PLAN.md — Validation & Calibration Plan (Dec 2025)
 
-This document outlines a concrete test plan for the graph ρ-law (v3) and the
-ρ-dynamics conjecture. The goal is to move from toy examples to **real
-networks** and check whether:
+Goal of v3 tests:  
+Move from “ρ is a beautiful invariant” to “ρ is a rigorously stress-tested,
+empirically calibrated tool” across:
 
-1. ρ = A²(1 − D) behaves as predicted under controlled perturbations.
-2. Empirical transitions (collapse, lock-in, fragmentation) occur near
-   a domain-independent ρ_crit ≈ 0.7419.
-3. Scalar v2 estimates track graph-based ρ on the same systems.
+1. Synthetic graphs (sanity and edge cases),
+2. Public large-scale datasets (citation, social, governance),
+3. Time-evolving systems (ρ-dynamics and α/β),
+4. Alignment with empirical collapse / brittleness events,
+5. Robustness to modelling choices.
 
----
+This plan assumes:
 
-## Phase 1 — Controlled Graph Experiments
-
-### 1.1 Star–Plunder Reproduction (Sanity Check)
-
-- Use `graph_rho_law.py` and `demo_star_plunder(N, ps)` to:
-  - Verify monotonicity of ρ(p) for a range of N (e.g. N = 5, 10, 20, 50).
-  - Record ρ(p) for p ∈ {0, 0.2, 0.5, 0.8, 0.9, 1.0}.
-- Check numerically:
-  - ρ(p) is strictly increasing in p.
-  - ρ(p) → a value in the 0.7–0.8 band as p → 1 for moderate N.
-- Output:
-  - Tables and plots ρ(p) vs p for the paper / notes.
-
-### 1.2 Competing Hubs Model
-
-- Construct graphs with:
-  - Two hubs (A and B) instead of one.
-  - A plunder parameter p controlling how much non-hub flow goes to the
-    **stronger** hub vs shared between both.
-- Questions:
-  - Does ρ stay lower when authority is split across hubs?
-  - At what point (asymmetry increase) does ρ cross ρ_crit?
-- Output:
-  - Plots of ρ vs “hub asymmetry parameter”, highlighting the crossing of
-    ρ_crit.
+- Graph law: ρ(W) = A(W)² · (1 − D(W))
+- A(W): strongest node’s incoming share
+- D(W): average normalized outgoing entropy
+- Event horizon: ρ_event ≈ 0.7419 (theoretical ceiling)
+- Human soft bands (provisional, Dec 2025):
+  - ρ ≤ 0.01 → “green” (open)
+  - 0.01–0.03 → “yellow” (brittle/hype)
+  - 0.03–0.05 → “orange” (high risk)
+  - 0.05–0.10 → “red” (near-collapse)
+  - >0.10 → “black” (no functioning system observed)
 
 ---
 
-## Phase 2 — Real Network Case Studies
+## Phase 0 — Implementation Sanity
 
-### 2.1 Small Citation Subgraphs
+**Files involved:**
 
-**Goal:** test ρ on real scientific influence networks.
+- `graph_rho_law.py`
+- `GRAPH_RHO_LAW.md`
+- `RHO_DYNAMICS.md`
 
-Steps:
+**Tests:**
 
-1. Select a small citation subgraph:
-   - e.g. papers about a specific topic, one journal, or a time slice.
-2. Build the weight matrix W:
-   - Nodes = papers or journals.
-   - Edges = citations (optionally weighted by recency or journal rank).
-3. Compute:
-   - Graph A, D, ρ via `compute_graph_rho(W)`.
-4. Perturb toward plunder:
-   - Artificially increase edges into the top hub(s).
-   - Remove or down-weight non-hub edges.
-5. Recompute ρ after each perturbation.
-6. Evaluate:
-   - Does ρ increase as the network is centralised?
-   - Does the network’s structure (e.g. modularity, path diversity) visibly
-     degrade as ρ approaches the 0.7–0.8 band?
+0.1 **Shape & domain checks**
 
-Optional: compare graph-based ρ to v2 scalar estimates for the same field.
+- Verify `compute_graph_rho(W)`:
+  - Rejects non-square W.
+  - Handles N=1, N=2 edge cases.
+  - Returns A ∈ [0,1], D ∈ [0,1], ρ ∈ [0,1].
 
----
+0.2 **Trivial graphs**
 
-### 2.2 Social / Interaction Networks
+- Zero matrix W=0:
+  - A=0, D=0 (or undefined but clipped to 0), ρ=0.
+- Identity matrix:
+  - A ≈ 1/N, D ≈ 0, ρ ≈ (1/N)².
+- Complete uniform graph (all entries equal):
+  - A ≈ 1/N, D ≈ 1, ρ ≈ 0.
 
-**Goal:** test ρ on human or agent interaction graphs.
-
-Examples:
-
-- Friendship / follower networks (anonymised),
-- Organisation charts with communication edges,
-- Online community interaction graphs.
-
-Steps:
-
-1. Obtain an anonymised edge list (source,target,weight).
-2. Build W and compute A, D, ρ.
-3. Identify events:
-   - Increased centralisation (e.g. one account or team becomes a bottleneck),
-   - Fragmentation or collapse events (community dies, org restructures).
-4. Track ρ over time (snapshots):
-   - Does ρ rise toward/above ρ_crit near collapse or lock-in events?
-5. Compare:
-   - Graph ρ vs simpler scalar metrics (Gini of degree, etc.).
+Expected: ρ is small whenever there is no strong hub and/or high diversity.
 
 ---
 
-## Phase 3 — ρ-Dynamics Estimation
+## Phase 1 — Synthetic Graph Families
 
-Using `rho_eval_private.py` or equivalent private tooling:
+### 1.1 Star–Plunder Model
 
-### 3.1 Estimate α/β from ρ Time Series
+Use `star_plunder_matrix(N, p)` from `graph_rho_law.py`.
 
-For systems where multiple snapshots over time are available:
+- N ∈ {10, 30, 50, 100}
+- p ∈ [0,1] grid, e.g. 0.0, 0.1, 0.2, …, 1.0, plus finer near 0.9–1.0.
 
-1. Compute ρ(t_k) for k = 0..T.
-2. Fit the coarse-grained evolution law:
+For each (N, p):
+
+- Compute (A, D, ρ).
+- Check:
+  - ρ increases monotonically with p (up to numerical noise).
+  - For N ~ 30–50, ρ only approaches ≈ 0.7 when p ≳ 0.94–0.95.
+
+Output:
+
+- Plots ρ(p) for each N.
+- Table where p at which ρ exceeds {0.01, 0.03, 0.05, 0.10, 0.5, 0.7} is recorded.
+
+### 1.2 Two-Hub Model
+
+Construct W(N, p, k):
+
+- Hubs: nodes 0 and 1.
+- Non-hubs send fraction p to hubs, split k:(1−k) between 0 and 1.
+- Remaining 1−p spread uniformly across non-hubs.
+
+Scan:
+
+- p ∈ [0,1],
+- k ∈ {0.5, 0.7, 0.9, 0.99}.
+
+Check:
+
+- For k=0.5, ρ remains much lower than in star.
+- As k→1 (one hub dominates), ρ approaches star case.
+- Monotonicity of ρ in “effective monopoly” (k) at fixed p.
+
+---
+
+## Phase 2 — Static Real-World Graphs
+
+### 2.1 Citation Networks
+
+Use standard public datasets (examples):
+
+- Cora, CiteSeer, PubMed (Planetoid / PyG),
+- ogbn-arxiv,
+- HepPh,
+- Topic slices: COVID-19 vaccines, CRISPR, deep learning (OpenAlex/Semantic Scholar).
+
+For each dataset:
+
+- Build W with:
+  - Nodes = papers,
+  - Edge j→i if j cites i, optionally weighted (e.g. weight 1 per citation).
+- Compute (A, D, ρ).
+
+Collect a table:
+
+| Dataset         | N_nodes | N_edges | A     | D     | ρ       |
+|-----------------|---------|---------|-------|-------|---------|
+| ...             | ...     | ...     | ...   | ...   | ...     |
+
+Then:
+
+- Compute distribution stats: min, median, mean, max ρ.
+- Identify top-ρ field slices (e.g., COVID/CRISPR).
+
+Checks:
+
+- All citation networks lie within ρ ≪ 0.1.
+- Hype fields (COVID, CRISPR, DL) sit at the top end (≈ 0.02–0.03).
+
+### 2.2 Social / Follower / Interaction Networks
+
+Datasets (examples):
+
+- Twitter-like graphs, soc-Pokec, Epinions, wiki-Vote, email-Eu-core, Bitcoin trust, etc.
+
+For each dataset:
+
+- Define W:
+  - Node = account/user,
+  - Edge j→i if j follows/endorses i, or applies trust, etc.
+- Compute (A, D, ρ).
+
+Collect table and stats as for citations.
+
+Checks:
+
+- Most social/trust networks have ρ ≪ 0.05.
+- Known pathological or highly centralised groups (e.g. pump-and-dump chats)
+  show elevated ρ, with near-0.1 cases associated with actual collapse.
+
+---
+
+## Phase 3 — ρ-Dynamics on Time-Evolving Systems
+
+### 3.1 Yearly Citation Slices (Fields)
+
+Pick fields with good temporal coverage (e.g. arXiv CS, specific subfields, etc.):
+
+For each field:
+
+1. For each year t:
+   - Build W_t (citation graph restricted to that year / window).
+   - Compute ρ(t) via graph law.
+
+2. Fit the dynamic law:
 
    \[
-     \dot{\rho} \approx \alpha - (\alpha + \beta)\rho,
+     \Delta \rho(t) = \rho(t+1) - \rho(t)
+     \approx \alpha - (\alpha + \beta)\rho(t).
    \]
 
-   e.g. via regression on:
+3. Estimate α, β, α/β, and implied ρ* = α/(α+β).
 
-   \[
-     \Delta\rho \approx \alpha - (\alpha + \beta)\rho(t).
-   \]
+4. Compare:
 
-3. Extract estimated \(\alpha\) and \(\beta\), then compute:
+   - α/β vs event-horizon ratio ≈ 2.875,
+   - ρ* vs human bands.
 
-   \[
-     \rho_* = \frac{\alpha}{\alpha + \beta}, \quad
-     \frac{\alpha}{\beta}.
-   \]
+Checks:
 
-4. Compare \(\alpha/\beta\) to the critical ratio:
+- For healthy/open fields, |α/β| ≪ 1, ρ* ≪ 0.01.
+- No field shows α/β near event-horizon regime.
+- ρ(t) curves stay well inside green/yellow bands.
 
-   \[
-     \frac{\alpha}{\beta}_\text{crit} \approx 2.875.
-   \]
+### 3.2 Social / Community Dynamics
 
-5. Check:
-   - Systems that empirically collapse / lock-in have \(\alpha/\beta\) above
-     the critical ratio.
-   - Systems that remain open / dynamic have \(\alpha/\beta\) below it.
+If time-sliced social/interaction data exist (e.g., community graphs per week/month):
+
+Repeat the same:
+
+- Compute ρ(t) per time slice.
+- Fit α/β.
+- Look for systems drifting toward higher ρ, especially ones that later collapse or fragment.
+
+Checks:
+
+- Systems with known breakdowns tend to have ρ(t) trending toward orange/red bands.
+- Long-lived communities exhibit stable low ρ or reversion from moderate ρ back to lower levels.
 
 ---
 
-## Phase 4 — Scalar vs Graph ρ Cross-Checks
+## Phase 4 — Collapse / Brittleness Alignment
 
-Whenever both scalar and graph views are possible:
+Using datasets where **collapse events** or severe brittleness are known:
 
-1. Compute v2 scalar outputs for the system (e.g. a field, journal, or
-   canonical paper).
-2. Compute graph-based ρ for the corresponding influence network.
-3. Examine:
-   - Correlation between v2 `rho_plunder_equiv` and graph-based ρ.
-   - Whether both cross their respective collapse thresholds around the same
-     period.
+- Citation domains with replication crises,
+- Social communities that imploded or fragmented,
+- Coordination networks that rug-pulled or were abandoned.
 
-Goal: demonstrate that v2 is a **good low-dimensional proxy** for the deeper
-graph-based invariant.
+For each:
+
+1. Measure ρ at or just before the crisis event (if time-indexed).
+2. Compare with:
+   - healthy controls in similar domains,
+   - human soft bands.
+
+Analyses:
+
+- Is ρ systematically higher in crisis systems than in matched non-crisis systems?
+- At what ρ ranges do we see:
+  - sharp increases in retractions, scandals, or defection,
+  - structural fragmentation in graphs (e.g., modularity spikes, giant component splitting)?
+
+Goal:
+
+- **Empirically refine** human soft thresholds:
+  - Adjust cutpoints (0.01, 0.03, 0.05, 0.10) if needed.
+  - Identify domain-specific nuances (e.g., academia vs DeFi vs governance).
 
 ---
 
-## Notes
+## Phase 5 — Robustness & Sensitivity
 
-- This test plan is deliberately modular: any lab can pick one phase and
-  reproduce/extend.
-- The most critical evidence will come from:
-  - Time-series ρ(t) around real collapse / lock-in events.
-  - Cross-domain consistency of ρ_crit and the critical α/β ratio.
+### 5.1 Alternative A and D Definitions
 
-Results from these tests can be linked back to:
+Test variants of A, D:
 
-- `GRAPH_RHO_LAW.md` (definitions),
-- `RHO_DYNAMICS.md` (evolution law),
-- and any future formal theorems about ρ on specific graph families.
+- A_alt:
+  - Use top-k hub share (sum of top 3 or 10 incoming shares) instead of single max.
+- D_alt:
+  - Weight node entropies by activity (e.g., outgoing volume) instead of simple average.
+
+For a subset of datasets, re-compute ρ_alt and check:
+
+- Rank correlation between ρ and ρ_alt.
+- Whether high-risk systems remain high-risk under reasonable definition changes.
+
+### 5.2 Sampling & Noise
+
+For large graphs:
+
+- Subsample:
+  - nodes,
+  - edges,
+  - time windows.
+- Check stability of ρ under such subsampling.
+
+Goal:
+
+- Show that ρ’s qualitative ordering (“which systems are more centralised & brittle”) is stable under realistic sampling and noise.
+
+---
+
+## Phase 6 — Reporting & Documentation
+
+Outputs for public repos:
+
+- Updated documentation (already reflected in:
+  - `RHO_STACK_OVERVIEW.md`,
+  - `GRAPH_RHO_LAW.md`,
+  - `RHO_DYNAMICS.md`),
+- A short **Empirical Calibration** section summarising:
+  - typical ρ ranges per domain,
+  - observed max ρ for functioning human systems,
+  - observed ρ for known collapse cases,
+  - the role of ρ_event as a hard ceiling / event horizon.
+
+Private repo:
+
+- Scripts for:
+  - building W from each dataset,
+  - computing ρ and fit parameters,
+  - generating plots and tables.
+
+The test plan is considered **v3-complete** when:
+
+1. Synthetic tests confirm monotonicity and liming behavior (star & two-hub).
+2. Real-world tests establish stable ρ ranges and confirm that human systems
+   live far below the event horizon.
+3. Dynamics tests produce α/β estimates consistent with “open regime” for
+   known healthy systems.
+4. Collapse alignment tests show that systems in empirical red bands are
+   indeed brittle or collapsing in practice.
