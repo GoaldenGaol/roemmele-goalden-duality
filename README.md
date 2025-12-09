@@ -1,5 +1,7 @@
 # ρ-Plunder × Empirical Distrust Invariant (Dec 2025)
 
+The Goalden invariant ρ was introduced by Shaun Lewis (Goalden Gaol), and the Roemmele–Goalden duality builds on Brian Roemmele’s original Empirical Distrust Algorithm.
+
 **Status:** mathematically sound, empirically calibrated, still under active refinement.  
 **Core idea:** a single scalar ρ, computed from **centralisation** and **path diversity**, behaves like a universal risk indicator for collapse or lock-in across many domains (science, social systems, coordination graphs, etc.).
 
